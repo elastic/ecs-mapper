@@ -1,0 +1,1 @@
+{ "log_level": "debug", "eventid": 424242, "srcip": "192.0.2.1", "srcport": 42, "destip": "192.0.2.2", "destport": 42, "hostip": "192.0.2.42", "ts": "now", "action": "Testing", "duration": "1.1", "process":{ "args": "--yolo" }, "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" }

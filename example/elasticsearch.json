@@ -1,0 +1,153 @@
+[
+  {
+    "rename": {
+      "field": "srcip",
+      "target_field": "source.address",
+      "ignore_missing": true
+    }
+  },
+  {
+    "rename": {
+      "field": "srcport",
+      "target_field": "source.port",
+      "ignore_missing": true
+    }
+  },
+  {
+    "convert": {
+      "field": "source.port",
+      "type": "long",
+      "ignore_missing": true,
+      "ignore_failure": true
+    }
+  },
+  {
+    "rename": {
+      "field": "destip",
+      "target_field": "destination.address",
+      "ignore_missing": true
+    }
+  },
+  {
+    "rename": {
+      "field": "destport",
+      "target_field": "destination.port",
+      "ignore_missing": true
+    }
+  },
+  {
+    "convert": {
+      "field": "destination.port",
+      "type": "long",
+      "ignore_missing": true,
+      "ignore_failure": true
+    }
+  },
+  {
+    "set": {
+      "field": "timestamp",
+      "value": "{{ts}}",
+      "if": "ctx.ts != null"
+    }
+  },
+  {
+    "rename": {
+      "field": "action",
+      "target_field": "event.action",
+      "ignore_missing": true
+    }
+  },
+  {
+    "lowercase": {
+      "field": "event.action",
+      "ignore_missing": true,
+      "ignore_failure": true
+    }
+  },
+  {
+    "rename": {
+      "field": "duration",
+      "target_field": "event.duration",
+      "ignore_missing": true
+    }
+  },
+  {
+    "convert": {
+      "field": "event.duration",
+      "type": "float",
+      "ignore_missing": true,
+      "ignore_failure": true
+    }
+  },
+  {
+    "rename": {
+      "field": "user_agent",
+      "target_field": "user_agent.original",
+      "ignore_missing": true
+    }
+  },
+  {
+    "rename": {
+      "field": "log_level",
+      "target_field": "log.level",
+      "ignore_missing": true
+    }
+  },
+  {
+    "uppercase": {
+      "field": "log.level",
+      "ignore_missing": true,
+      "ignore_failure": true
+    }
+  },
+  {
+    "rename": {
+      "field": "eventid",
+      "target_field": "event.id",
+      "ignore_missing": true
+    }
+  },
+  {
+    "convert": {
+      "field": "event.id",
+      "type": "string",
+      "ignore_missing": true,
+      "ignore_failure": true
+    }
+  },
+  {
+    "convert": {
+      "field": "successful",
+      "type": "boolean",
+      "ignore_missing": true,
+      "ignore_failure": true
+    }
+  },
+  {
+    "rename": {
+      "field": "hostip",
+      "target_field": "host.ip",
+      "ignore_missing": true
+    }
+  },
+  {
+    "append": {
+      "field": "host.ip",
+      "value": [
+
+      ],
+      "ignore_failure": true,
+      "if": "ctx.host?.ip != null"
+    }
+  },
+  {
+    "append": {
+      "field": "process.args",
+      "value": [
+
+      ],
+      "ignore_failure": true,
+      "if": "ctx.process?.args != null"
+    }
+  }
+]

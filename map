@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'logger'
+
+require_relative 'lib/options_parser'
+require_relative 'lib/mapping_loader'
+require_relative 'lib/beats_pipeline_generator'
+require_relative 'lib/elasticsearch_pipeline_generator'
+require_relative 'lib/logstash_pipeline_generator'
+
+SYNOPSIS = <<-SYN
+Reads a CSV mapping of source field names to destination field names, and generates
+Elastic pipelines to help perform the conversion.
+
+You can have as many columns as you want in your CSV.
+Only the following columns will be used by this tool:
+#{KNOWN_CSV_HEADERS.join(', ')}
+SYN
+
+def main(options)
+  raw_mapping = read_csv(options[:file])
+  mapping = make_mapping_explicit(raw_mapping, options)
+
+  create_output_directory!(options[:output])
+
+  elasticsearch_pl = generate_elasticsearch_pipeline(mapping)
+  puts output_elasticsearch_pipeline(elasticsearch_pl, options[:output])
+
+  beats_pl = generate_beats_pipeline(mapping)
+  puts output_beats_pipeline(beats_pl, options[:output])
+
+  mutations, array_fields = generate_logstash_pipeline(mapping)
+  puts output_logstash_pipeline(mutations, array_fields, options[:output])
+end
+
+def create_output_directory!(dir)
+  unless dir.directory?
+    FileUtils.mkdir_p(dir)
+  end
+end
+
+main( parse_options!(ARGV) )

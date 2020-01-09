@@ -1,0 +1,62 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - example/log-sample.log
+  processors:
+    - decode_json_fields:
+        fields: ["message"]
+        target: ""
+
+output.elasticsearch.enabled: false
+output.console:
+  enabled: true
+  pretty: true
+
+# Add the generated Beats pipeline below
+
+processors:
+- copy_fields:
+    fields:
+    - from: ts
+      to: timestamp
+    ignore_missing: true
+    fail_on_error: false
+- rename:
+    fields:
+    - from: srcip
+      to: source.address
+    - from: srcport
+      to: source.port
+    - from: destip
+      to: destination.address
+    - from: destport
+      to: destination.port
+    - from: action
+      to: event.action
+    - from: duration
+      to: event.duration
+    - from: user_agent
+      to: user_agent.original
+    - from: log_level
+      to: log.level
+    - from: eventid
+      to: event.id
+    - from: hostip
+      to: host.ip
+    ignore_missing: true
+    fail_on_error: false
+- convert:
+    fields:
+    - from: source.port
+      type: long
+    - from: destination.port
+      type: long
+    - from: event.duration
+      type: float
+    - from: event.id
+      type: string
+    - from: successful
+      type: boolean
+    ignore_missing: true
+    fail_on_error: false

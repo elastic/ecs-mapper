@@ -1,0 +1,17 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - example/log-sample.log
+  processors:
+    - decode_json_fields:
+        fields: ["message"]
+        target: ""
+
+output.elasticsearch.enabled: false
+output.console:
+  enabled: true
+  pretty: true
+
+# Add the generated Beats pipeline below
+
