@@ -2,17 +2,16 @@
 
 ## Synopsis
 
-This tool turns a mapping CSV to equivalent pipelines for:
+This tool turns a mapping CSV to roughly equivalent pipelines for:
 
 - Beats
 - Elasticsearch
 - Logstash
 
-The goal of this tool is to give you a starter pipeline (of your choice) to get
-started quickly on your migration project.
+The goal of this tool is to generate starter pipelines of each flavor, to
+help you get started quickly on you map your event sources to ECS.
 
-A "mapping CSV" is what you get when you start planning how to map one of
-your event sources to ECS.
+A "mapping CSV" is what you get, when you start planning how to map an event source to ECS.
 
 Colleagues may collaborate on a spreadsheet that looks like this:
 
@@ -23,12 +22,14 @@ Colleagues may collaborate on a spreadsheet that looks like this:
 | message      |                   | No need to change this field          |
 | ...          |                   |                                       |
 
-You can export this to CSV, run it through the ECS mapper, and get all 3 starter
-pipelines generated.
+You can export your spreadsheet to CSV, run it through the ECS mapper,
+and get your starter pipelines generated.
 
 Note that this tool generates partial pipelines, that only do the rename/copy
-operations and the field format adjustments. It's up to you to integrate the
-result in a complete pipeline that ingests and outputs the data however you need.
+operations and some field format adjustments. It's up to you to integrate them
+in a complete pipeline that ingests and outputs the data however you need.
+
+Scroll down to the [Examples](#examples) section below, to get right to the good stuff.
 
 ## Maturity
 
@@ -47,16 +48,22 @@ as you need in your spreadsheets/CSV. Only the following columns will be conside
 | source\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. |
 | destination\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Can be left empty if there's no rename (just a type conversion). |
 | rename | optional | rename, copy, (empty) | What to do with the field. If left empty, default action is based on the `--rename-action` flag. |
-| format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, uppercase, lowercase | Simple conversion to apply to the field value. |
+| format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, uppercase, lowercase, (empty) | Simple conversion to apply to the field value. |
 
 ## Usage and Dependencies
 
-This is a simple Ruby program with no external dependencies.
-Any modern version of Ruby should be sufficient.
+This is a simple Ruby program with no external dependencies, other than development
+dependencies.
+
+Any modern version of Ruby should be sufficient. If you don't intend to run the
+tests or the rake jobs, you can skip right to [usage tips](#using-the-ecs-mapper).
 
 ### Ruby Setup
 
-Once you have Ruby installed for your platform, install dependencies:
+If you want to tweak the code of this script, run the tests or use the rake tasks,
+you'll need to install the development dependencies.
+
+Once you have Ruby installed for your platform, installing the dependencies is simply:
 
 ```bash
 gem install bundler
