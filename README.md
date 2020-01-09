@@ -2,14 +2,14 @@
 
 ## Synopsis
 
-This tool turns a mapping CSV to roughly equivalent pipelines for:
+This tool turns a field mapping CSV to roughly equivalent pipelines for:
 
 - Beats
 - Elasticsearch
 - Logstash
 
 The goal of this tool is to generate starter pipelines of each flavor, to
-help you get started quickly on you map your event sources to ECS.
+help you get started quickly in mapping your event sources to ECS.
 
 A "mapping CSV" is what you get, when you start planning how to map an event source to ECS.
 
