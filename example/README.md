@@ -2,9 +2,9 @@
 
 Here are the instructions to run each of the example pipelines.
 
-Note that the the example Beats and Logstash pipelines have been copied to
-"example/beats/filebeat.yml" and "example/logstash/2-*.conf" respectively,
-in order to produce functional configurations used in the following examples.
+Note that the the Beats and Logstash pipelines have been copied to
+"example/beats/filebeat.yml" and "example/logstash/2-ecs-conversion.conf" respectively,
+in order to produce functional configurations used in the examples below.
 
 All commands should be run from the root of this repo.
 
@@ -22,7 +22,7 @@ POST _ingest/pipeline/_simulate
         "srcip": "192.0.2.1", "srcport": "42", "destip": "192.0.2.2", "destport": "42",
         "timestamp": "now", "action": "Testing", "duration": "1.1",
         "successful": "true", "process":{ "args": "--yolo" },
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" 
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       }
     }
   ]
@@ -70,21 +70,21 @@ When you execute the call, you'll see the resulting event, with transformations 
 
 ## Logstash
 
-Logstash can load multiple .conf files in alphabetical order.
-We already have the generated Logstash partial pipeline copied to the
-sample configuration directory "example/logstash/":
+Logstash can load multiple .conf files in alphabetical order, to form a full pipeline.
+We already have the generated Logstash pipeline copied to the example configuration
+directory, at "example/logstash/2-ecs-conversion.conf":
 
 ```bash
 ls example/logstash/ # 1-input.conf 2-ecs-conversion.conf 3-output.conf
 ```
 
-Start Logstash, using this set of sample configuration files:
+Start Logstash:
 
 ```bash
 $logstash_path/bin/logstash -f example/logstash/
 ```
 
-Once Logstash is running, paste a sample document in Logstash' terminal:
+Once Logstash is running, paste this document in Logstash' terminal:
 
 ```json
 { "log_level": "debug", "eventid": 424242, "srcip": "192.0.2.1", "srcport": 42, "destip": "192.0.2.2", "destport": 42, "hostip": "192.0.2.42", "ts": "now", "action": "Testing", "duration": "1.1", "process":{ "args": "--yolo" }, "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36" }
@@ -109,17 +109,17 @@ Logstash outputs the resulting event, with transformations applied:
 
 ## Beats
 
-We already have a sample Filebeat configuration file based on the generated partial
-pipeline, at "example/beats/filebeat.yml". This sample config file reads the sample
+We already have an example Filebeat configuration file based on the generated
+pipeline, at "example/beats/filebeat.yml". This configuration file reads the sample
 NDJSON log "example/log-sample.log" and outputs the converted docs to stdout.
 
-Run Filebeat with this sample configuration file:
+Run Filebeat with this configuration:
 
 ```bash
 $filebeat_path/filebeat -c example/beats/filebeat.yml
 ```
 
-You should see an output similar to:
+Filebeat outputs the resulting event, with transformations applied:
 
 ```JSON
 {
