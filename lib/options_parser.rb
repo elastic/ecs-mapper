@@ -39,9 +39,11 @@ def parse_options!(argv)
     #   end
     # end
 
-    # opts.on_tail("--debug", "Shorthand for --log-level=debug") do |value|
-    #   options[:log_level] = Logger::DEBUG
-    # end
+    opts.on_tail("--debug", "Shorthand for --log-level=debug") do |value|
+      $debug = true
+      require 'pry'
+      # options[:log_level] = Logger::DEBUG
+    end
 
     opts.on_tail('-h', '--help', "Display help") do
       options[:action] = :help
