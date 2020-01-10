@@ -83,26 +83,26 @@ rake test
 Help.
 
 ```bash
-./map --help
+./ecs-mapper --help
 ```
 
 Process my.csv and output pipelines in the same directory as the csv.
 
 ```bash
-./map --file my.csv
+./ecs-mapper --file my.csv
 ```
 
 Process my.csv and output pipelines elsewhere.
 
 ```bash
-./map --file my.csv --output pipelines/mine/
+./ecs-mapper --file my.csv --output pipelines/mine/
 ```
 
 Process my.csv, fields with an empty value in the "rename" column are copied,
 instead of renamed (the default).
 
 ```bash
-./map --file my.csv --rename copy
+./ecs-mapper --file my.csv --rename copy
 ```
 
 ## Examples
