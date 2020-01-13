@@ -52,6 +52,9 @@ as you need in your spreadsheets/CSV. Only the following columns will be conside
 | rename | optional | rename, copy, (empty) | What to do with the field. If left empty, default action is based on the `--rename-action` flag. |
 | format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, uppercase, lowercase, (empty) | Simple conversion to apply to the field value. |
 
+You can start from this
+[spreadsheet template](https://docs.google.com/spreadsheets/d/1m5JiOTeZtUueW3VOVqS8bFYqNGEEyp0jAsgO12NFkNM). Make a copy of it in your Google Docs account, or download it as an Excel file.
+
 ## Usage and Dependencies
 
 This is a simple Ruby program with no external dependencies, other than development
