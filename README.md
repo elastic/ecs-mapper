@@ -87,6 +87,21 @@ Help.
 
 ```bash
 ./ecs-mapper --help
+Reads a CSV mapping of source field names to destination field names, and generates
+Elastic pipelines to help perform the conversion.
+
+You can have as many columns as you want in your CSV.
+Only the following columns will be used by this tool:
+destination_field, format_action, rename, source_field
+
+Options:
+    -f, --file FILE                  Input CSV file.
+    -o, --output DIR                 Output directory. Defaults to parent dir of --file.
+        --rename-action RENAME_ACTION
+                                     Default action for field renames. Acceptable values are: copy, rename. Default is rename.
+        --debug                      Shorthand for --log-level=debug
+    -h, --help                       Display help
+
 ```
 
 Process my.csv and output pipelines in the same directory as the csv.
