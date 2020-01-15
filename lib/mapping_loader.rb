@@ -18,8 +18,11 @@ end
 
 def csv_to_mapping(csv)
   mapping = {}
-  # Only read supported fields, ignore the rest
   csv.each do |row|
+    # skip rows that don't have a source field
+    next if row['source_field'].nil? || row['source_field'].strip.empty?
+
+    # Only read supported fields, ignore the rest
     source_field = row['source_field'].strip
     mapping[source_field] = {
       source_field:       source_field,

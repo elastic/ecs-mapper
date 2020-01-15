@@ -51,4 +51,32 @@ class MappingLoaderTest < Minitest::Test
     # If no errors, this is good (no need for assertion)
     validate_mapping!({ 'foo' => {:format_action => 'to_array'}})
   end
+
+  def test_mapping_loader_skips_missing_source_field
+    csv = [
+      # skipped
+      { 'source_field' => nil,           'destination_field' => nil },
+      { 'source_field' => nil,           'destination_field' => 'fieldname' },
+      { 'source_field' => ' ',           'destination_field' => '  ' },
+      { 'source_field' => "\t",           'destination_field' => 'fieldname' },
+      # Not skipped
+      { 'source_field' => 'correct_fieldname',  'destination_field' => nil },
+      { 'source_field' => 'original_fieldname', 'destination_field' => 'new_fieldname' },
+    ]
+    expected_mapping = {
+      'correct_fieldname' => {
+        source_field: 'correct_fieldname',
+        destination_field: nil,
+        rename: nil,
+        format_action: nil,
+      },
+      'original_fieldname' => {
+        source_field: 'original_fieldname',
+        destination_field: 'new_fieldname',
+        rename: nil,
+        format_action: nil,
+      }
+    }
+    assert_equal(expected_mapping, csv_to_mapping(csv))
+  end
 end
