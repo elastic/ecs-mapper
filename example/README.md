@@ -111,7 +111,7 @@ Logstash outputs the resulting event, with transformations applied:
 
 We already have an example Filebeat configuration file based on the generated
 pipeline, at "example/beats/filebeat.yml". This configuration file reads the sample
-NDJSON log "example/log-sample.log" and outputs the converted docs to stdout.
+NDJSON log "example/log/sample.log" and outputs the converted docs to stdout.
 
 Run Filebeat with this configuration:
 

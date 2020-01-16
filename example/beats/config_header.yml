@@ -2,7 +2,7 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - example/log-sample.log
+    - example/log/sample.log
   processors:
     - decode_json_fields:
         fields: ["message"]
