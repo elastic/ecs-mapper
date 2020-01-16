@@ -1,7 +1,7 @@
 require 'csv'
 
-REQUIRED_CSV_HEADERS  = ['source_field', 'destination_field'].sort
-KNOWN_CSV_HEADERS     = (REQUIRED_CSV_HEADERS + ['rename', 'format_action']).sort
+REQUIRED_CSV_HEADERS  = ['source_field', 'destination_field']
+KNOWN_CSV_HEADERS     = REQUIRED_CSV_HEADERS + ['format_action', 'rename']
 ACCEPTED_FORMAT_ACTIONS = ['uppercase', 'lowercase', 'to_boolean', 'to_integer',
                            'to_float', 'to_array', 'to_string'].sort
 
