@@ -70,13 +70,14 @@ end
 def smart_output_default(raw_options)
   options = raw_options.dup
   if options[:output]
-    options[:output] = Pathname.new(options[:output])
+    output = Pathname.new(options[:output])
   else
     if options[:file]
-      options[:output] = Pathname.new(options[:file]).parent
+      output = Pathname.new(options[:file]).parent
     else
-      options[:output] = Pathname.new('.')
+      output = Pathname.new('.')
     end
   end
+  options[:output] = output.expand_path
   options
 end

@@ -20,6 +20,9 @@ SYN
 
 def main(options)
   puts "Options: #{options}" if $debug
+
+  FileUtils.mkdir_p(options[:output])
+
   raw_mapping = read_csv(options[:file])
   mapping = make_mapping_explicit(raw_mapping, options)
 
