@@ -47,7 +47,7 @@ as you need in your spreadsheets/CSV. Only the following columns will be conside
 
 | column name | required | allowed values | notes |
 |-------------|----------|----------------|-------|
-| source\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. |
+| source\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Lines with empty "source\_field" are skipped. |
 | destination\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Can be left empty if there's no rename (just a type conversion). |
 | format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, uppercase, lowercase, (empty) | Simple conversion to apply to the field value. |
 | rename | optional | rename, copy, (empty) | What to do with the field. If left empty, default action is based on the `--rename-action` flag. |
