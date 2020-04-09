@@ -20,15 +20,15 @@ def csv_to_mapping(csv)
   mapping = {}
   csv.each do |row|
     # skip rows that don't have a source field
-    next if row['source_field'].nil? || row['source_field'].strip.empty?
+    next if row['source_field'].nil? || row['source_field'].strip.empty? || row['destination_field'].nil? || row['destination_field'].strip.empty?
 
     # Only read supported fields, ignore the rest
-    source_field = row['source_field']
-    dest_field = row['destination_field']
+    source_field = row['source_field'].strip
+    dest_field = row['destination_field'].strip
 
-    mapping[source_field + dest_field] = {
-      source_field:       row['source_field'],
-      destination_field:  (row['destination_field'] && row['destination_field'].strip),
+    mapping[source_field + '+' + dest_field] = {
+      source_field:       source_field,
+      destination_field:  dest_field,
       # optional fields
       rename:             (row['rename'] && row['rename'].strip),
       format_action:      (row['format_action'] && row['format_action'].strip),
