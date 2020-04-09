@@ -49,11 +49,21 @@ def parse_options!(argv)
       options[:action] = :help
     end
 
+    opts.on_tail('-v', '--version', "Display version and exit") do
+      options[:action] = :version
+    end
+
   end
 
   parser.parse!(argv)
 
+  if :version == options[:action]
+    puts VERSION_STRING
+    exit
+  end
+
   if :help == options[:action]
+    puts VERSION_STRING, ''
     puts parser.to_s
     exit
   end

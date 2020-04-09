@@ -18,6 +18,9 @@ Only the following columns will be used by this tool:
 #{KNOWN_CSV_HEADERS.join(', ')}
 SYN
 
+VERSION = '0.0.1'
+VERSION_STRING = "ecs-mapper #{VERSION}"
+
 def main(options)
   puts "Options: #{options}" if $debug
 
