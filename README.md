@@ -1,5 +1,12 @@
 # ECS Mapper
 
+## Warning
+
+This tool is currently experimental and not yet officially supported.
+
+Our goal is to solicit early feedback on making the process of converting data to ECS even easier.
+So please feel welcome to open issues and PRs, and we will address them on a best effort basis.
+
 ## Synopsis
 
 This tool turns a field mapping CSV to roughly equivalent pipelines for:
