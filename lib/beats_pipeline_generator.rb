@@ -6,10 +6,12 @@ def generate_beats_pipeline(mapping)
   fields_to_copy = []
   fields_to_rename = []
   fields_to_convert = []
-  mapping.each_pair do |source_field, row|
+  mapping.each_pair do |_, row|
     if same_field_name?(row)
       next if row[:format_action].nil?
     end
+
+    source_field = row[:source_field]
 
     if row[:destination_field]
       statement = {

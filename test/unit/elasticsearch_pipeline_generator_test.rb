@@ -44,4 +44,16 @@ class OptionsParserTest < Minitest::Test
     assert_equal("ctx.containsKey('@timestamp')",
                  field_presence_predicate('@timestamp'))
   end
+
+  def test_duplicate_source_fields_same_destination
+    mapping = {
+      'field1' => { source_field: 'field1', destination_field: 'field2', rename: 'copy' },
+      'field2' => { source_field: 'field2', destination_field: 'field2', rename: 'copy' },
+    } 
+
+    p = generate_elasticsearch_pipeline(mapping)
+    puts p.inspect
+ 
+  end
+
 end

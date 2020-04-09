@@ -3,10 +3,12 @@ require_relative 'helpers'
 
 def generate_elasticsearch_pipeline(mapping)
   pipeline = []
-  mapping.each_pair do |source_field, row|
+  mapping.each_pair do |_, row|
     if same_field_name?(row)
       next if row[:format_action].nil?
     end
+
+    source_field = row[:source_field]
 
     # copy/rename
     if row[:destination_field]
