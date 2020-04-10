@@ -47,7 +47,14 @@ class BeatsPipelineGeneratorTest < Minitest::Test
     pl = generate_beats_pipeline(mapping)
 
     assert_equal(
-      {"copy_fields"=>{"fields"=>[{"from"=>"field1", "to"=>"field3"}, {"from"=>"field2", "to"=>"field3"}, {"from"=>"field4", "to"=>"field5"}, {"from"=>"field4", "to"=>"field6"}], "ignore_missing"=>true, "fail_on_error"=>false}},
+      { "copy_fields" => {
+          "fields" => [ 
+              {"from"=>"field1", "to"=>"field3"}, 
+              {"from"=>"field2", "to"=>"field3"}, 
+              {"from"=>"field4", "to"=>"field5"}, 
+              {"from"=>"field4", "to"=>"field6"}], 
+          "ignore_missing"=>true, 
+          "fail_on_error"=>false}},
       pl.first
     )
   end
