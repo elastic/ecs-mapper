@@ -49,4 +49,20 @@ class LogstashPipelineGeneratorTest < Minitest::Test
       render_mutate_line('uppercase' => ['[log][level]'])
     )
   end
+
+  def test_duplicate_source_fields_same_destination
+    mapping = {
+      'field1+field3' => { source_field: 'field1', destination_field: 'field3', rename: 'copy' },
+      'field2+field3' => { source_field: 'field2', destination_field: 'field3', rename: 'copy' },
+      'field4+field5' => { source_field: 'field4', destination_field: 'field5', rename: 'copy' },
+      'field4+field6' => { source_field: 'field4', destination_field: 'field6', rename: 'copy' },
+    }
+
+    pl = generate_logstash_pipeline(mapping)
+
+    assert_equal(
+      [{"copy"=>{"[field1]"=>"[field3]"}}, {"copy"=>{"[field2]"=>"[field3]"}}, {"copy"=>{"[field4]"=>"[field5]"}}, {"copy"=>{"[field4]"=>"[field6]"}}],
+      pl.first
+    )
+  end
 end

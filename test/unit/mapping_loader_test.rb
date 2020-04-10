@@ -33,7 +33,7 @@ class MappingLoaderTest < Minitest::Test
              'rename' => ' copy',
     }]
     expected_mapping = {
-      'my_field' => {
+      'my_field+another_field' => {
         source_field: 'my_field',
         destination_field: 'another_field',
         rename: 'copy',
@@ -52,25 +52,19 @@ class MappingLoaderTest < Minitest::Test
     validate_mapping!({ 'foo' => {:format_action => 'to_array'}})
   end
 
-  def test_mapping_loader_skips_missing_source_field
+  def test_mapping_loader_skips_missing_fields
     csv = [
       # skipped
       { 'source_field' => nil,           'destination_field' => nil },
       { 'source_field' => nil,           'destination_field' => 'fieldname' },
       { 'source_field' => ' ',           'destination_field' => '  ' },
-      { 'source_field' => "\t",           'destination_field' => 'fieldname' },
-      # Not skipped
+      { 'source_field' => "\t",          'destination_field' => 'fieldname' },
       { 'source_field' => 'correct_fieldname',  'destination_field' => nil },
+      # Not skipped
       { 'source_field' => 'original_fieldname', 'destination_field' => 'new_fieldname' },
     ]
     expected_mapping = {
-      'correct_fieldname' => {
-        source_field: 'correct_fieldname',
-        destination_field: nil,
-        rename: nil,
-        format_action: nil,
-      },
-      'original_fieldname' => {
+      'original_fieldname+new_fieldname' => {
         source_field: 'original_fieldname',
         destination_field: 'new_fieldname',
         rename: nil,

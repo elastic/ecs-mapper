@@ -3,10 +3,13 @@ require_relative 'helpers'
 def generate_logstash_pipeline(mapping)
   mutations = [] # Most things are in the same mutate block
   array_fields = []
-  mapping.each_pair do |source_field, row|
+  mapping.each_pair do |_, row|
     if same_field_name?(row)
       next if row[:format_action].nil?
     end
+
+    source_field = row[:source_field]
+
     if row[:destination_field]
       if 'copy' == row[:rename]
         mutations << { 'copy' => { lsf(source_field) => lsf(row[:destination_field]) } }

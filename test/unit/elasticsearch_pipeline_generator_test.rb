@@ -3,7 +3,7 @@ require_relative '../../lib/elasticsearch_pipeline_generator'
 
 class OptionsParserTest < Minitest::Test
   def test_copy_processor
-    mapping = { 'old_field' => {
+    mapping = { 'old_field+new_field' => {
       source_field: 'old_field', destination_field: 'new_field', rename: 'copy'
     } }
     pl = generate_elasticsearch_pipeline(mapping)
@@ -15,7 +15,7 @@ class OptionsParserTest < Minitest::Test
   end
 
   def test_rename_processor
-    mapping = { 'old_field' => {
+    mapping = { 'old_field+new_field' => {
       source_field: 'old_field', destination_field: 'new_field', rename: 'rename'
     } }
     pl = generate_elasticsearch_pipeline(mapping)
@@ -28,8 +28,8 @@ class OptionsParserTest < Minitest::Test
 
   def test_non_renamed_elasticsearch
     mapping = {
-      'field1' => { source_field: 'field1', destination_field: 'field1', rename: 'copy' },
-      'field2' => { source_field: 'field2', destination_field: nil, rename: 'copy' },
+      'field1+field1' => { source_field: 'field1', destination_field: 'field1', rename: 'copy' },
+      'field2+' => { source_field: 'field2', destination_field: nil, rename: 'copy' },
     }
     pl = generate_elasticsearch_pipeline(mapping)
     assert_equal([], pl, "No rename processor should be added when there's no rename to perform")
@@ -43,5 +43,34 @@ class OptionsParserTest < Minitest::Test
 
     assert_equal("ctx.containsKey('@timestamp')",
                  field_presence_predicate('@timestamp'))
+  end
+
+  def test_duplicate_source_fields_same_destination
+    mapping = {
+      'field1+field3' => { source_field: 'field1', destination_field: 'field3', rename: 'copy' },
+      'field2+field3' => { source_field: 'field2', destination_field: 'field3', rename: 'copy' },
+      'field4+field5' => { source_field: 'field4', destination_field: 'field5', rename: 'copy' },
+      'field4+field6' => { source_field: 'field4', destination_field: 'field6', rename: 'copy' },
+    } 
+
+    pl = generate_elasticsearch_pipeline(mapping)
+
+    assert_equal(4, pl.length, "Expected 4 processors")   
+    assert_equal(
+      {:set=>{:field=>"field3", :value=>"{{field1}}", :if=>"ctx.field1 != null"}},
+      pl[0]
+    )
+    assert_equal(
+      {:set=>{:field=>"field3", :value=>"{{field2}}", :if=>"ctx.field2 != null"}},
+      pl[1]
+    ) 
+    assert_equal(
+      {:set=>{:field=>"field5", :value=>"{{field4}}", :if=>"ctx.field4 != null"}},
+      pl[2]
+    )
+    assert_equal(
+      {:set=>{:field=>"field6", :value=>"{{field4}}", :if=>"ctx.field4 != null"}},
+      pl[3]
+    )         
   end
 end
