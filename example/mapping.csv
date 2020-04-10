@@ -1,5 +1,7 @@
-source_field,rename,format_action,destination_field,Notes,
-srcip,rename,,source.address,A note from a colleague,
+source_field,copy_action,format_action,destination_field,Notes,
+srcip,,,source.address,A note from a colleague about copying this field,
+srcip,,,source.ip,Another note
+new_event.srcip,,,source.ip,A note about a new event type
 srcport,rename,to_integer,source.port,,
 destip,,,destination.address,,
 destport,,to_integer,destination.port,,

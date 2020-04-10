@@ -7,7 +7,7 @@ def parse_options!(argv)
   # defaults
   options = {
     :action => :main,
-    :rename => 'rename',
+    :copy_action => 'copy',
   }
 
   parser = OptionParser.new do |opts|
@@ -27,8 +27,8 @@ def parse_options!(argv)
       options[:output] = value
     end
 
-    opts.on('--rename-action RENAME_ACTION', "Default action for field renames. Acceptable values are: copy, rename. Default is rename.") do |value|
-      options[:rename] = value
+    opts.on('--copy-action COPY_ACTION', "Default action for field renames. Acceptable values are: copy, rename. Default is copy.") do |value|
+      options[:copy_action] = value
     end
 
 
