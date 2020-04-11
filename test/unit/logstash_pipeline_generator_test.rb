@@ -4,9 +4,9 @@ require_relative '../../lib/logstash_pipeline_generator'
 class LogstashPipelineGeneratorTest < Minitest::Test
   def test_logstash_pipeline
     mapping = {
-      'old1' => { source_field: 'old1', destination_field: 'new1', rename: 'copy' },
-      'old2' => { source_field: 'old2', destination_field: 'new2', rename: 'rename' },
-      'old3' => { source_field: 'old3', destination_field: 'new3', rename: 'copy' },
+      'old1' => { source_field: 'old1', destination_field: 'new1', copy_action: 'copy' },
+      'old2' => { source_field: 'old2', destination_field: 'new2', copy_action: 'rename' },
+      'old3' => { source_field: 'old3', destination_field: 'new3', copy_action: 'copy' },
     }
     mutations, array_fields = generate_logstash_pipeline(mapping)
     old1_processor = mutations[0]
@@ -19,8 +19,8 @@ class LogstashPipelineGeneratorTest < Minitest::Test
 
   def test_non_renamed_ls
     mapping = {
-      'field1' => { source_field: 'field1', destination_field: 'field1', rename: 'copy' },
-      'field2' => { source_field: 'field2', destination_field: nil, rename: 'copy' },
+      'field1' => { source_field: 'field1', destination_field: 'field1', copy_action: 'copy' },
+      'field2' => { source_field: 'field2', destination_field: nil, copy_action: 'copy' },
     }
     mutations, array_fields = generate_logstash_pipeline(mapping)
     assert_equal([], mutations, "No rename processor should be added when there's no rename to perform")
@@ -52,10 +52,10 @@ class LogstashPipelineGeneratorTest < Minitest::Test
 
   def test_duplicate_source_fields_same_destination
     mapping = {
-      'field1+field3' => { source_field: 'field1', destination_field: 'field3', rename: 'copy' },
-      'field2+field3' => { source_field: 'field2', destination_field: 'field3', rename: 'copy' },
-      'field4+field5' => { source_field: 'field4', destination_field: 'field5', rename: 'copy' },
-      'field4+field6' => { source_field: 'field4', destination_field: 'field6', rename: 'copy' },
+      'field1+field3' => { source_field: 'field1', destination_field: 'field3', copy_action: 'copy' },
+      'field2+field3' => { source_field: 'field2', destination_field: 'field3', copy_action: 'copy' },
+      'field4+field5' => { source_field: 'field4', destination_field: 'field5', copy_action: 'copy' },
+      'field4+field6' => { source_field: 'field4', destination_field: 'field6', copy_action: 'copy' },
     }
 
     pl = generate_logstash_pipeline(mapping)
