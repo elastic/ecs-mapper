@@ -11,7 +11,7 @@ def generate_elasticsearch_pipeline(mapping)
     source_field = row[:source_field]
 
     # copy/rename
-    if row[:destination_field]
+    if row[:destination_field] and not ['to_timestamp_unix_ms', 'to_timestamp_unix'].include?(row[:format_action])
       if 'copy' == row[:copy_action]
         processor = {
           set: {
@@ -76,7 +76,28 @@ def generate_elasticsearch_pipeline(mapping)
             if: field_presence_predicate(affected_field),
           }
         }
+
+      elsif ['to_timestamp_unix_ms'].include?(row[:format_action])
+        processor = {
+          'date' => {
+            field: row[:source_field],
+            target_field: row[:destination_field],
+            formats: [ "UNIX_MS" ],
+            timezone: "UTC"
+          }
+        }
+
+      elsif ['to_timestamp_unix'].include?(row[:format_action])
+        processor = {
+          'date' => {
+            field: row[:source_field],
+            target_field: row[:destination_field],
+            formats: [ "UNIX" ],
+            timezone: "UTC"
+          }
+        }
       end
+
     end
     pipeline << processor if processor # Skip lower/upper and others not done by convert processor
   end

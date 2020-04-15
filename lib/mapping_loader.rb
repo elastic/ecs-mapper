@@ -1,9 +1,26 @@
 require 'csv'
 
-REQUIRED_CSV_HEADERS  = ['source_field', 'destination_field']
-KNOWN_CSV_HEADERS     = REQUIRED_CSV_HEADERS + ['format_action', 'copy_action']
-ACCEPTED_FORMAT_ACTIONS = ['uppercase', 'lowercase', 'to_boolean', 'to_integer',
-                           'to_float', 'to_array', 'to_string'].sort
+REQUIRED_CSV_HEADERS = [
+    'source_field', 
+    'destination_field'
+]
+
+KNOWN_CSV_HEADERS = REQUIRED_CSV_HEADERS + [
+    'format_action', 
+    'copy_action'
+]
+
+ACCEPTED_FORMAT_ACTIONS = [
+    'uppercase', 
+    'lowercase', 
+    'to_boolean', 
+    'to_integer',
+    'to_float', 
+    'to_array', 
+    'to_string',
+    'to_timestamp_unix',
+    'to_timestamp_unix_ms'
+].sort
 
 def read_csv(file_name)
   csv = CSV.read(file_name, headers: true)
@@ -45,6 +62,13 @@ def make_mapping_explicit(raw_mapping, options)
   raw_mapping.each_pair do |key, row|
     mapping[key] = row.dup
     mapping[key][:copy_action] ||= options[:copy_action]
+
+    if mapping[key][:destination_field] == '@timestamp' and 
+        ( mapping[key][:format_action].nil? || 
+          mapping[key][:format_action].strip.empty? )
+        mapping[key][:format_action] = 'to_timestamp_unix_ms'
+    end
+
   end
   validate_mapping!(mapping)
   return mapping
