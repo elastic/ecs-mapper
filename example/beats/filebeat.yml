@@ -2,7 +2,7 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - example/log-sample.log
+    - example/log/sample.log
   processors:
     - decode_json_fields:
         fields: ["message"]
@@ -18,20 +18,24 @@ output.console:
 processors:
 - copy_fields:
     fields:
+    - from: srcip
+      to: source.address
+    - from: srcip
+      to: source.ip
+    - from: new_event.srcip
+      to: source.ip
+    - from: destip
+      to: destination.address
+    - from: destport
+      to: destination.port
     - from: ts
       to: timestamp
     ignore_missing: true
     fail_on_error: false
 - rename:
     fields:
-    - from: srcip
-      to: source.address
     - from: srcport
       to: source.port
-    - from: destip
-      to: destination.address
-    - from: destport
-      to: destination.port
     - from: action
       to: event.action
     - from: duration
@@ -56,7 +60,5 @@ processors:
       type: float
     - from: event.id
       type: string
-    - from: successful
-      type: boolean
     ignore_missing: true
     fail_on_error: false

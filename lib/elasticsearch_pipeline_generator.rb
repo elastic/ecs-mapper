@@ -12,7 +12,7 @@ def generate_elasticsearch_pipeline(mapping)
 
     # copy/rename
     if row[:destination_field]
-      if 'copy' == row[:rename]
+      if 'copy' == row[:copy_action]
         processor = {
           set: {
             field: row[:destination_field],

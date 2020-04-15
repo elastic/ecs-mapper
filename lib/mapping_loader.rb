@@ -1,7 +1,7 @@
 require 'csv'
 
 REQUIRED_CSV_HEADERS  = ['source_field', 'destination_field']
-KNOWN_CSV_HEADERS     = REQUIRED_CSV_HEADERS + ['format_action', 'rename']
+KNOWN_CSV_HEADERS     = REQUIRED_CSV_HEADERS + ['format_action', 'copy_action']
 ACCEPTED_FORMAT_ACTIONS = ['uppercase', 'lowercase', 'to_boolean', 'to_integer',
                            'to_float', 'to_array', 'to_string'].sort
 
@@ -33,7 +33,7 @@ def csv_to_mapping(csv)
       source_field:       source_field,
       destination_field:  dest_field,
       # optional fields
-      rename:             (row['rename'] && row['rename'].strip),
+      copy_action:             (row['copy_action'] && row['copy_action'].strip),
       format_action:      (row['format_action'] && row['format_action'].strip),
     }
   end
@@ -44,7 +44,7 @@ def make_mapping_explicit(raw_mapping, options)
   mapping = {}
   raw_mapping.each_pair do |key, row|
     mapping[key] = row.dup
-    mapping[key][:rename] ||= options[:rename]
+    mapping[key][:copy_action] ||= options[:copy_action]
   end
   validate_mapping!(mapping)
   return mapping

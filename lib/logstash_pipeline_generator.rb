@@ -11,7 +11,7 @@ def generate_logstash_pipeline(mapping)
     source_field = row[:source_field]
 
     if row[:destination_field]
-      if 'copy' == row[:rename]
+      if 'copy' == row[:copy_action]
         mutations << { 'copy' => { lsf(source_field) => lsf(row[:destination_field]) } }
       else
         mutations << { 'rename' => { lsf(source_field) => lsf(row[:destination_field]) } }

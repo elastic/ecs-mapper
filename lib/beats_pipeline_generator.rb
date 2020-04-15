@@ -18,7 +18,7 @@ def generate_beats_pipeline(mapping)
         'from' => source_field,
         'to' => row[:destination_field],
       }
-      if 'copy' == row[:rename]
+      if 'copy' == row[:copy_action]
         fields_to_copy << statement
       else
         fields_to_rename << statement

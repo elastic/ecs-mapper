@@ -55,9 +55,9 @@ as you need in your spreadsheets/CSV. Only the following columns will be conside
 | column name | required | allowed values | notes |
 |-------------|----------|----------------|-------|
 | source\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Lines with empty "source\_field" are skipped. |
-| destination\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Can be left empty if there's no rename (just a type conversion). |
+| destination\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Can be left empty if there's no copy action (just a type conversion). |
 | format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, uppercase, lowercase, (empty) | Simple conversion to apply to the field value. |
-| rename | optional | rename, copy, (empty) | What to do with the field. If left empty, default action is based on the `--rename-action` flag. |
+| copy\_action | optional | rename, copy, (empty) | What to do with the field. If left empty, default action is based on the `--copy-action` flag. |
 
 You can start from this
 [spreadsheet template](https://docs.google.com/spreadsheets/d/1m5JiOTeZtUueW3VOVqS8bFYqNGEEyp0jAsgO12NFkNM). Make a copy of it in your Google Docs account, or download it as an Excel file.
@@ -99,13 +99,13 @@ Elastic pipelines to help perform the conversion.
 
 You can have as many columns as you want in your CSV.
 Only the following columns will be used by this tool:
-source_field, destination_field, format_action, rename
+source_field, destination_field, format_action, copy_action
 
 Options:
     -f, --file FILE                  Input CSV file.
     -o, --output DIR                 Output directory. Defaults to parent dir of --file.
-        --rename-action RENAME_ACTION
-                                     Default action for field renames. Acceptable values are: copy, rename. Default is rename.
+        --copy-action COPY_ACTION
+                                     Default action for field renames. Acceptable values are: copy, rename. Default is copy.
         --debug                      Shorthand for --log-level=debug
     -h, --help                       Display help
 ```
@@ -122,11 +122,11 @@ Process my.csv and output pipelines elsewhere.
 ./ecs-mapper --file my.csv --output pipelines/mine/
 ```
 
-Process my.csv, fields with an empty value in the "rename" column are copied,
-instead of renamed (the default).
+Process my.csv, fields with an empty value in the "copy\_action" column are renamed,
+instead of copied (the default).
 
 ```bash
-./ecs-mapper --file my.csv --rename copy
+./ecs-mapper --file my.csv --copy_action rename 
 ```
 
 ## Examples

@@ -7,7 +7,7 @@ class MappingLoaderTest < Minitest::Test
       'copied_field' => {
         source_field: 'copied_field',
         destination_field: 'new.copied_field',
-        rename: 'copy'
+        copy_action: 'copy'
       },
       'default_field' => {
         source_field: 'default_field',
@@ -16,27 +16,27 @@ class MappingLoaderTest < Minitest::Test
       'renamed_field' => {
         source_field: 'renamed_field',
         destination_field: 'new.renamed_field',
-        rename: 'rename'
+        copy_action: 'rename'
       },
     }
-    options = { rename: 'copy' }
+    options = { copy_action: 'copy' }
     mapping = make_mapping_explicit(raw_mapping, options)
-    assert_equal('copy', mapping['default_field'][:rename])
-    assert_equal('copy', mapping['copied_field'][:rename])
-    assert_equal('rename', mapping['renamed_field'][:rename])
+    assert_equal('copy', mapping['default_field'][:copy_action])
+    assert_equal('copy', mapping['copied_field'][:copy_action])
+    assert_equal('rename', mapping['renamed_field'][:copy_action])
   end
 
   def test_csv_to_mapping_cleans_up_spaces_ignores_unknown_keys
     # Note: an instance of CSV behaves a lot like an array of hashes
     csv = [{ 'source_field' => ' my_field ',
              'destination_field' => "another_field\t",
-             'rename' => ' copy',
+             'copy_action' => ' copy',
     }]
     expected_mapping = {
       'my_field+another_field' => {
         source_field: 'my_field',
         destination_field: 'another_field',
-        rename: 'copy',
+        copy_action: 'copy',
         format_action: nil,
       }
     }
@@ -67,7 +67,7 @@ class MappingLoaderTest < Minitest::Test
       'original_fieldname+new_fieldname' => {
         source_field: 'original_fieldname',
         destination_field: 'new_fieldname',
-        rename: nil,
+        copy_action: nil,
         format_action: nil,
       }
     }

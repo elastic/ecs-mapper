@@ -1,9 +1,23 @@
 [
   {
-    "rename": {
-      "field": "srcip",
-      "target_field": "source.address",
-      "ignore_missing": true
+    "set": {
+      "field": "source.address",
+      "value": "{{srcip}}",
+      "if": "ctx.srcip != null"
+    }
+  },
+  {
+    "set": {
+      "field": "source.ip",
+      "value": "{{srcip}}",
+      "if": "ctx.srcip != null"
+    }
+  },
+  {
+    "set": {
+      "field": "source.ip",
+      "value": "{{new_event.srcip}}",
+      "if": "ctx.new_event?.srcip != null"
     }
   },
   {
@@ -22,17 +36,17 @@
     }
   },
   {
-    "rename": {
-      "field": "destip",
-      "target_field": "destination.address",
-      "ignore_missing": true
+    "set": {
+      "field": "destination.address",
+      "value": "{{destip}}",
+      "if": "ctx.destip != null"
     }
   },
   {
-    "rename": {
-      "field": "destport",
-      "target_field": "destination.port",
-      "ignore_missing": true
+    "set": {
+      "field": "destination.port",
+      "value": "{{destport}}",
+      "if": "ctx.destport != null"
     }
   },
   {
@@ -116,14 +130,6 @@
     }
   },
   {
-    "convert": {
-      "field": "successful",
-      "type": "boolean",
-      "ignore_missing": true,
-      "ignore_failure": true
-    }
-  },
-  {
     "rename": {
       "field": "hostip",
       "target_field": "host.ip",
@@ -138,16 +144,6 @@
       ],
       "ignore_failure": true,
       "if": "ctx.host?.ip != null"
-    }
-  },
-  {
-    "append": {
-      "field": "process.args",
-      "value": [
-
-      ],
-      "ignore_failure": true,
-      "if": "ctx.process?.args != null"
     }
   }
 ]
