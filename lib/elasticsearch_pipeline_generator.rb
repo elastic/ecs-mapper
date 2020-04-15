@@ -83,7 +83,8 @@ def generate_elasticsearch_pipeline(mapping)
             field: row[:source_field],
             target_field: row[:destination_field],
             formats: [ "UNIX_MS" ],
-            timezone: "UTC"
+            timezone: "UTC",
+            ignore_failure: true
           }
         }
 
@@ -93,7 +94,8 @@ def generate_elasticsearch_pipeline(mapping)
             field: row[:source_field],
             target_field: row[:destination_field],
             formats: [ "UNIX" ],
-            timezone: "UTC"
+            timezone: "UTC",
+            ignore_failure: true
           }
         }
       end
