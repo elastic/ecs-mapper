@@ -73,4 +73,53 @@ class MappingLoaderTest < Minitest::Test
     }
     assert_equal(expected_mapping, csv_to_mapping(csv))
   end
+
+  def test_mapping_timestamp
+    csv = [
+      { 'source_field' => 'some_timestamp_field1', 
+        'destination_field' => '@timestamp' },
+      { 'source_field' => 'some_timestamp_field2', 
+        'destination_field' => '@timestamp', 
+        'format_action' => 'to_timestamp_unix_ms' },
+      { 'source_field' => 'some_timestamp_field3', 
+        'destination_field' => '@timestamp', 
+        'format_action' => 'to_timestamp_unix' },
+      { 'source_field' => 'some_timestamp_field4', 
+        'destination_field' => 'some_other_timestamp', 
+        'format_action' => 'to_timestamp_unix' },
+    ]
+
+    options = { copy_action: 'copy' }
+    mapping = csv_to_mapping(csv)
+    explicit_mapping = make_mapping_explicit(mapping, options)
+
+    assert_equal(explicit_mapping['some_timestamp_field1+@timestamp'],
+      { :source_field => "some_timestamp_field1", 
+        :destination_field => "@timestamp", 
+        :copy_action => "copy", 
+        :format_action => "to_timestamp_unix_ms"
+      }
+    )
+    assert_equal(explicit_mapping['some_timestamp_field2+@timestamp'],
+      { :source_field => "some_timestamp_field2",
+        :destination_field => "@timestamp",
+        :copy_action => "copy", 
+        :format_action => "to_timestamp_unix_ms"
+      }
+    )
+    assert_equal(explicit_mapping['some_timestamp_field3+@timestamp'],
+      { :source_field => "some_timestamp_field3",
+        :destination_field => "@timestamp",
+        :copy_action => "copy",
+        :format_action => "to_timestamp_unix"
+      }
+    )
+    assert_equal(explicit_mapping['some_timestamp_field4+some_other_timestamp'],
+      { :source_field => "some_timestamp_field4",
+        :destination_field => "some_other_timestamp",
+        :copy_action => "copy",
+        :format_action => "to_timestamp_unix"
+      }
+    )
+  end
 end
