@@ -87,10 +87,15 @@ filter {
   mutate {
     #{mutations.map{|line| render_mutate_line(line)}.join("\n    ")}
   }
-  date {
+CONF
+
+    if dates.length > 0
+      f.write(<<-DATES)
+date {
     #{dates.map{|line| render_date_line(line)}.join("\n    ")}
   } 
-CONF
+DATES
+    end
 
     array_fields.each do |array_field|
       f.write(<<-RB)
