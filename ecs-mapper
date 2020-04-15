@@ -37,8 +37,8 @@ def main(options)
   beats_pl = generate_beats_pipeline(mapping)
   puts output_beats_pipeline(beats_pl, options[:output])
 
-  mutations, array_fields = generate_logstash_pipeline(mapping)
-  puts output_logstash_pipeline(mutations, array_fields, options[:output])
+  mutations, dates, array_fields = generate_logstash_pipeline(mapping)
+  puts output_logstash_pipeline(mutations, dates, array_fields, options[:output])
 end
 
 def create_output_directory!(dir)

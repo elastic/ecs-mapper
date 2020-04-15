@@ -2,6 +2,7 @@ require_relative 'helpers'
 
 def generate_logstash_pipeline(mapping)
   mutations = [] # Most things are in the same mutate block
+  dates = []
   array_fields = []
   mapping.each_pair do |_, row|
     if same_field_name?(row)
@@ -10,7 +11,7 @@ def generate_logstash_pipeline(mapping)
 
     source_field = row[:source_field]
 
-    if row[:destination_field]
+    if row[:destination_field] and not ['to_timestamp_unix_ms', 'to_timestamp_unix'].include?(row[:format_action])
       if 'copy' == row[:copy_action]
         mutations << { 'copy' => { lsf(source_field) => lsf(row[:destination_field]) } }
       else
@@ -38,10 +39,20 @@ def generate_logstash_pipeline(mapping)
         mutations << { 'lowercase' => [lsf(affected_field)] }
       elsif 'to_array' == row[:format_action]
         array_fields << lsf(affected_field)
+      elsif ['to_timestamp_unix_ms'].include?(row[:format_action])
+        dates << {
+            'match' => [ lsf(row[:source_field]), "UNIX_MS" ]
+        }
+
+      elsif ['to_timestamp_unix'].include?(row[:format_action])
+        dates << {
+            'match' => [ lsf(row[:source_field]), "UNIX" ]
+        }
+
       end
     end
   end
-  return mutations, array_fields
+  return mutations, dates, array_fields
 end
 
 def render_mutate_line(line)
@@ -55,11 +66,19 @@ def render_mutate_line(line)
   end
 end
 
+def render_date_line(line)
+  raise "Expected one key at root of #{line}" if line.keys.size != 1
+  action = line.keys.first
+  if line[action].is_a? Array
+    return "#{action} => #{line[action]}"
+  end
+end
+
 def lsf(field)
   field.split('.').map{|f| "[#{f}]"}.join
 end
 
-def output_logstash_pipeline(mutations, array_fields, output_dir)
+def output_logstash_pipeline(mutations, dates, array_fields, output_dir)
   file_name = output_dir.join('logstash.conf')
   File.open(file_name, 'w') do |f|
 
@@ -68,6 +87,9 @@ filter {
   mutate {
     #{mutations.map{|line| render_mutate_line(line)}.join("\n    ")}
   }
+  date {
+    #{dates.map{|line| render_date_line(line)}.join("\n    ")}
+  } 
 CONF
 
     array_fields.each do |array_field|
