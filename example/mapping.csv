@@ -1,16 +1,16 @@
-source_field,copy_action,format_action,destination_field,Notes,
+source_field,copy_action,format_action,destination_field,Notes
 srcip,,,source.address,Copying srcip to source.address
-srcip,,,source.ip,Copying srcip a second time to source.ip as well,
-new_event.srcip,,,source.ip,This new event type could also populate source.ip,
-srcport,rename,to_integer,source.port,,
-destip,,,destination.address,,
-destport,,to_integer,destination.port,,
-ts,copy,,timestamp,,
-action,rename,lowercase,event.action,,
-duration,rename,to_float,event.duration,,
-user_agent,rename,,user_agent.original,,
-log_level,rename,uppercase,log.level,,
-eventid,rename,to_string,event.id,IDs should be strings!,
-successful,,to_boolean,,,
-hostip,rename,to_array,host.ip,,
-process.args,,to_array,,,
+srcip,,,source.ip,Copying srcip a second time to source.ip as well
+new_event.srcip,,,source.ip,This new event type could also populate source.ip
+srcport,rename,to_integer,source.port,
+destip,,,destination.address,
+destport,,to_integer,destination.port,
+ts,copy,,timestamp,
+action,rename,lowercase,event.action,
+duration,rename,to_float,event.duration,
+user_agent,rename,,user_agent.original,
+log_level,rename,uppercase,log.level,
+eventid,rename,to_string,event.id,IDs should be strings!
+successful,,to_boolean,,
+hostip,rename,to_array,host.ip,
+process.args,,to_array,,
