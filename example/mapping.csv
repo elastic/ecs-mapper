@@ -2,6 +2,9 @@ source_field,copy_action,format_action,destination_field,Notes,
 srcip,,,source.address,Copying srcip to source.address
 srcip,,,source.ip,Copying srcip a second time to source.ip as well,
 new_event.srcip,,,source.ip,This new event type could also populate source.ip,
+some_timestamp_field,,to_timestamp_unix_ms,@timestamp,Convert this timestamp to UNIX_MS format
+some_other_timestamp,,,@timestamp,Convert this timestamp to default UNIX_MS
+some_new_timestamp,,to_timestamp_unix,destination_timestamp,Convert this timestamp to UNIX format
 srcport,rename,to_integer,source.port,,
 destip,,,destination.address,,
 destport,,to_integer,destination.port,,

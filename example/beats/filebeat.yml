@@ -16,6 +16,24 @@ output.console:
 # Add the generated Beats pipeline below
 
 processors:
+- timestamp:
+    field: some_timestamp_field
+    layouts: UNIX_MS
+    timezone: UTC
+    ignore_missing: true
+    ignore_failure: true
+- timestamp:
+    field: some_other_timestamp
+    layouts: UNIX_MS
+    timezone: UTC
+    ignore_missing: true
+    ignore_failure: true
+- timestamp:
+    field: some_new_timestamp
+    layouts: UNIX
+    timezone: UTC
+    ignore_missing: true
+    ignore_failure: true
 - copy_fields:
     fields:
     - from: srcip

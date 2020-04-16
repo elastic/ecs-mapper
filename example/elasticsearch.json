@@ -21,6 +21,39 @@
     }
   },
   {
+    "date": {
+      "field": "some_timestamp_field",
+      "target_field": "@timestamp",
+      "formats": [
+        "UNIX_MS"
+      ],
+      "timezone": "UTC",
+      "ignore_failure": true
+    }
+  },
+  {
+    "date": {
+      "field": "some_other_timestamp",
+      "target_field": "@timestamp",
+      "formats": [
+        "UNIX_MS"
+      ],
+      "timezone": "UTC",
+      "ignore_failure": true
+    }
+  },
+  {
+    "date": {
+      "field": "some_new_timestamp",
+      "target_field": "destination_timestamp",
+      "formats": [
+        "UNIX"
+      ],
+      "timezone": "UTC",
+      "ignore_failure": true
+    }
+  },
+  {
     "rename": {
       "field": "srcport",
       "target_field": "source.port",
