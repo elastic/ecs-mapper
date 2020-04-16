@@ -1,4 +1,4 @@
-source_field,copy_action,format_action,destination_field,Notes,
+source_field,copy_action,format_action,destination_field,Notes
 srcip,,,source.address,Copying srcip to source.address
 srcip,,,source.ip,Copying srcip a second time to source.ip as well,
 new_event.srcip,,,source.ip,This new event type could also populate source.ip,
