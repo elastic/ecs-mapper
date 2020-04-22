@@ -11,7 +11,7 @@ def generate_logstash_pipeline(mapping)
 
     source_field = row[:source_field]
 
-    if row[:destination_field] and not ['to_timestamp_unix_ms', 'to_timestamp_unix'].include?(row[:format_action])
+    if row[:destination_field] and not ['parse_timestamp'].include?(row[:format_action])
       if 'copy' == row[:copy_action]
         mutations << { 'copy' => { lsf(source_field) => lsf(row[:destination_field]) } }
       else
@@ -39,16 +39,10 @@ def generate_logstash_pipeline(mapping)
         mutations << { 'lowercase' => [lsf(affected_field)] }
       elsif 'to_array' == row[:format_action]
         array_fields << lsf(affected_field)
-      elsif ['to_timestamp_unix_ms'].include?(row[:format_action])
+      elsif ['parse_timestamp'].include?(row[:format_action])
         dates << {
-            'match' => [ lsf(row[:source_field]), "UNIX_MS" ]
+            'match' => [ lsf(row[:source_field]), row[:timestamp_format] ]
         }
-
-      elsif ['to_timestamp_unix'].include?(row[:format_action])
-        dates << {
-            'match' => [ lsf(row[:source_field]), "UNIX" ]
-        }
-
       end
     end
   end
@@ -91,7 +85,7 @@ CONF
 
     if dates.length > 0
       f.write(<<-DATES)
-date {
+  date {
     #{dates.map{|line| render_date_line(line)}.join("\n    ")}
   } 
 DATES

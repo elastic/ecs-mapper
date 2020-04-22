@@ -57,13 +57,16 @@ as you need in your spreadsheets/CSV. Only the following columns will be conside
 |-------------|----------|----------------|-------|
 | source\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Lines with empty "source\_field" are skipped. |
 | destination\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Can be left empty if there's no copy action (just a type conversion). |
-| format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, to\_timestamp\_unix, to\_timestamp\_unix\_ms, uppercase, lowercase, (empty) | Simple conversion to apply to the field value. |
+| format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, parse\_timestamp, uppercase, lowercase, (empty) | Simple conversion to apply to the field value. |
+| timestamp\_format | optional | UNIX, UNIX\_MS, ISO8601, TAI64N, or a Java time pattern. |
 | copy\_action | optional | rename, copy, (empty) | What to do with the field. If left empty, default action is based on the `--copy-action` flag. |
 
 You can start from this
 [spreadsheet template](https://docs.google.com/spreadsheets/d/1m5JiOTeZtUueW3VOVqS8bFYqNGEEyp0jAsgO12NFkNM). Make a copy of it in your Google Docs account, or download it as an Excel file.
 
-When the destination field is @timestamp, then we always enforce an explicit date ```format\_action``` to avoid conversion problems downstream. If no format is provided, then UNIX_MS is used.
+When the destination field is @timestamp, then we always enforce an explicit date ```format\_action``` of ```parse\_timestamp``` to ```UNIX_MS``` avoid conversion problems downstream. If no ```timestamp\_format``` is provided, then ```UNIX_MS``` is used. Please note that the timestamp layouts used by the [Filebeat processor for converting timestamps](https://www.elastic.co/guide/en/beats/filebeat/current/processor-timestamp.html) are different than the formats supported by date processors in Logstash and Elasticsearch Ingest Node.
+
+
 
 ## Usage and Dependencies
 
@@ -149,7 +152,8 @@ in [example/README.md](example/).
 * At this time, the Beats pipelines don't perform "to\_array", "uppercase" nor
   "lowercase" transformations. They could be implemented via the "script" processor.
 * Only UNIX and UNIX\_MS timestamp formats are supported across Beats, Elasticsearch, 
-  and Filebeat. For other formats, please modify the starter pipeline or add the 
-  appropriate date processor in the generated hand.
+  and Filebeat. For other timestamp formats, please modify the starter pipeline or add the 
+  appropriate date processor in the generated pipeline by hand. Refer to the documentation
+  for [Beats](https://www.elastic.co/guide/en/beats/filebeat/current/processor-timestamp.html), [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/master/date-processor.html), and [Logstash](https://www.elastic.co/guide/en/logstash/current/plugins-filters-date.html#plugins-filters-date-match).
 * This tool does not currently support additional processors, like setting static 
   field values or dropping events based on a condition.

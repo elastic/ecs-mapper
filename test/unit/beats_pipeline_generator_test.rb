@@ -59,4 +59,45 @@ class BeatsPipelineGeneratorTest < Minitest::Test
     )
   end
 
+  def test_dates
+    mapping = {
+      'field1+@timestamp' =>
+        { source_field: 'field1',
+          destination_field: '@timestamp',
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX_MS' },
+      'field2+@timestamp' =>
+        { source_field: 'field2',
+          destination_field: '@timestamp',
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX' },
+    }
+
+    pl = generate_beats_pipeline(mapping)
+
+    assert_equal(
+      pl,
+      [
+        { 
+          "timestamp" => { 
+            "field" => "field1", 
+            "layouts" => "UNIX_MS", 
+            "timezone" => "UTC", 
+            "ignore_missing" => true, 
+            "ignore_failure" => true 
+          }
+        }, 
+        {
+          "timestamp" => {
+            "field" => "field2", 
+            "layouts" => "UNIX", 
+            "timezone" => "UTC", 
+            "ignore_missing" => true, 
+            "ignore_failure"=>true
+          }
+        }
+      ]
+    ) 
+  end
+
 end

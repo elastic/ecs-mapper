@@ -48,6 +48,10 @@ processors:
       to: destination.port
     - from: ts
       to: timestamp
+    - from: successful
+      to: successful
+    - from: process.args
+      to: process.args
     ignore_missing: true
     fail_on_error: false
 - rename:
@@ -78,5 +82,7 @@ processors:
       type: float
     - from: event.id
       type: string
+    - from: successful
+      type: boolean
     ignore_missing: true
     fail_on_error: false

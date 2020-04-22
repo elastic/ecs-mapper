@@ -11,7 +11,7 @@ def generate_elasticsearch_pipeline(mapping)
     source_field = row[:source_field]
 
     # copy/rename
-    if row[:destination_field] and not ['to_timestamp_unix_ms', 'to_timestamp_unix'].include?(row[:format_action])
+    if row[:destination_field] and not ['parse_timestamp'].include?(row[:format_action])
       if 'copy' == row[:copy_action]
         processor = {
           set: {
@@ -77,23 +77,12 @@ def generate_elasticsearch_pipeline(mapping)
           }
         }
 
-      elsif ['to_timestamp_unix_ms'].include?(row[:format_action])
+      elsif ['parse_timestamp'].include?(row[:format_action])
         processor = {
           'date' => {
             field: row[:source_field],
             target_field: row[:destination_field],
-            formats: [ "UNIX_MS" ],
-            timezone: "UTC",
-            ignore_failure: true
-          }
-        }
-
-      elsif ['to_timestamp_unix'].include?(row[:format_action])
-        processor = {
-          'date' => {
-            field: row[:source_field],
-            target_field: row[:destination_field],
-            formats: [ "UNIX" ],
+            formats: [ row[:timestamp_format] ],
             timezone: "UTC",
             ignore_failure: true
           }

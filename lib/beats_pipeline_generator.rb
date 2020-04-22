@@ -15,7 +15,7 @@ def generate_beats_pipeline(mapping)
 
     source_field = row[:source_field]
 
-    if row[:destination_field] and not ['to_timestamp_unix_ms', 'to_timestamp_unix'].include?(row[:format_action])
+    if row[:destination_field] and not ['parse_timestamp'].include?(row[:format_action])
       statement = {
         'from' => source_field,
         'to' => row[:destination_field],
@@ -44,22 +44,11 @@ def generate_beats_pipeline(mapping)
         statement = { 'from' => affected_field, 'type' => type }
         fields_to_convert << statement
 
-      elsif ['to_timestamp_unix_ms'].include?(row[:format_action])
+      elsif ['parse_timestamp'].include?(row[:format_action])
         pipeline << {
           'timestamp' => {
             'field' => row[:source_field],
-            'layouts' => "UNIX_MS",
-            'timezone' => "UTC",
-            'ignore_missing' => true,
-            'ignore_failure' => true
-          }
-        }
-
-      elsif ['to_timestamp_unix'].include?(row[:format_action])
-        pipeline << {
-          'timestamp' => {
-            'field' => row[:source_field],
-            'layouts' => "UNIX",
+            'layouts' => row[:timestamp_format],
             'timezone' => "UTC",
             'ignore_missing' => true,
             'ignore_failure' => true

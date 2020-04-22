@@ -38,6 +38,7 @@ class MappingLoaderTest < Minitest::Test
         destination_field: 'another_field',
         copy_action: 'copy',
         format_action: nil,
+        timestamp_format: nil
       }
     }
     assert_equal(expected_mapping, csv_to_mapping(csv))
@@ -63,12 +64,15 @@ class MappingLoaderTest < Minitest::Test
       # Not skipped
       { 'source_field' => 'original_fieldname', 'destination_field' => 'new_fieldname' },
     ]
+    # +{"correct_fieldname+"=>{:source_field=>"correct_fieldname", :destination_field=>"", :copy_action=>nil, :format_action=>nil, :timestamp_format=>nil}, "original_fieldname+new_fieldname"=>{:source_field=>"original_fieldname", :destination_field=>"new_fieldname", :copy_action=>nil, :format_action=>nil, :timestamp_format=>nil}}
+
     expected_mapping = {
       'original_fieldname+new_fieldname' => {
         source_field: 'original_fieldname',
         destination_field: 'new_fieldname',
         copy_action: nil,
         format_action: nil,
+        timestamp_format: nil
       }
     }
     assert_equal(expected_mapping, csv_to_mapping(csv))
@@ -80,13 +84,24 @@ class MappingLoaderTest < Minitest::Test
         'destination_field' => '@timestamp' },
       { 'source_field' => 'some_timestamp_field2', 
         'destination_field' => '@timestamp', 
-        'format_action' => 'to_timestamp_unix_ms' },
+        'format_action' => 'parse_timestamp' },
       { 'source_field' => 'some_timestamp_field3', 
         'destination_field' => '@timestamp', 
-        'format_action' => 'to_timestamp_unix' },
+        'format_action' => 'parse_timestamp',
+        'timestamp_format' => 'UNIX' },
       { 'source_field' => 'some_timestamp_field4', 
         'destination_field' => 'some_other_timestamp', 
-        'format_action' => 'to_timestamp_unix' },
+        'format_action' => 'parse_timestamp',
+        'timestamp_format' => 'UNIX' },
+      { 'source_field' => 'some_timestamp_field5', 
+        'destination_field' => 'some_other_timestamp', 
+        'format_action' => 'parse_timestamp', 
+        'timestamp_format' => 'ISO8601' },
+      { 'source_field' => 'some_timestamp_field6',
+        'destination_field' => 'some_other_timestamp',
+        'format_action' => 'parse_timestamp',
+        'timestamp_format' => 'TAI64N' },
+
     ]
 
     options = { copy_action: 'copy' }
@@ -97,29 +112,50 @@ class MappingLoaderTest < Minitest::Test
       { :source_field => "some_timestamp_field1", 
         :destination_field => "@timestamp", 
         :copy_action => "copy", 
-        :format_action => "to_timestamp_unix_ms"
+        :format_action => "parse_timestamp",
+        :timestamp_format => "UNIX_MS"
       }
     )
     assert_equal(explicit_mapping['some_timestamp_field2+@timestamp'],
       { :source_field => "some_timestamp_field2",
         :destination_field => "@timestamp",
         :copy_action => "copy", 
-        :format_action => "to_timestamp_unix_ms"
+        :format_action => "parse_timestamp",
+        :timestamp_format => "UNIX_MS"
       }
     )
     assert_equal(explicit_mapping['some_timestamp_field3+@timestamp'],
       { :source_field => "some_timestamp_field3",
         :destination_field => "@timestamp",
         :copy_action => "copy",
-        :format_action => "to_timestamp_unix"
+        :format_action => "parse_timestamp",
+        :timestamp_format => "UNIX"
       }
     )
     assert_equal(explicit_mapping['some_timestamp_field4+some_other_timestamp'],
       { :source_field => "some_timestamp_field4",
         :destination_field => "some_other_timestamp",
         :copy_action => "copy",
-        :format_action => "to_timestamp_unix"
+        :format_action => "parse_timestamp",
+        :timestamp_format => "UNIX"
       }
     )
+    assert_equal(explicit_mapping['some_timestamp_field5+some_other_timestamp'],
+      { :source_field => "some_timestamp_field5",
+        :destination_field => "some_other_timestamp",
+        :copy_action => "copy",
+        :format_action => "parse_timestamp",
+        :timestamp_format => "ISO8601"
+      }
+    )
+    assert_equal(explicit_mapping['some_timestamp_field6+some_other_timestamp'],
+      { :source_field => "some_timestamp_field6",
+        :destination_field => "some_other_timestamp",
+        :copy_action => "copy",
+        :format_action => "parse_timestamp",
+        :timestamp_format => "TAI64N"
+      }
+    )
+   
   end
 end

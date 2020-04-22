@@ -79,11 +79,13 @@ class OptionsParserTest < Minitest::Test
       'field1+@timestamp' => 
         { source_field: 'field1', 
           destination_field: '@timestamp',
-          format_action: 'to_timestamp_unix_ms' },
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX_MS' },
       'field2+@timestamp' =>
         { source_field: 'field2',
           destination_field: '@timestamp',
-          format_action: 'to_timestamp_unix' },
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX' },
     }
 
     pl = generate_elasticsearch_pipeline(mapping)
