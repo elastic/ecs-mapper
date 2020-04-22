@@ -163,21 +163,6 @@
     }
   },
   {
-    "set": {
-      "field": "successful",
-      "value": "{{successful}}",
-      "if": "ctx.successful != null"
-    }
-  },
-  {
-    "convert": {
-      "field": "successful",
-      "type": "boolean",
-      "ignore_missing": true,
-      "ignore_failure": true
-    }
-  },
-  {
     "rename": {
       "field": "hostip",
       "target_field": "host.ip",
@@ -192,23 +177,6 @@
       ],
       "ignore_failure": true,
       "if": "ctx.host?.ip != null"
-    }
-  },
-  {
-    "set": {
-      "field": "process.args",
-      "value": "{{process.args}}",
-      "if": "ctx.process?.args != null"
-    }
-  },
-  {
-    "append": {
-      "field": "process.args",
-      "value": [
-
-      ],
-      "ignore_failure": true,
-      "if": "ctx.process?.args != null"
     }
   }
 ]
