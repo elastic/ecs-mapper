@@ -64,7 +64,6 @@ class MappingLoaderTest < Minitest::Test
       # Not skipped
       { 'source_field' => 'original_fieldname', 'destination_field' => 'new_fieldname' },
     ]
-    # +{"correct_fieldname+"=>{:source_field=>"correct_fieldname", :destination_field=>"", :copy_action=>nil, :format_action=>nil, :timestamp_format=>nil}, "original_fieldname+new_fieldname"=>{:source_field=>"original_fieldname", :destination_field=>"new_fieldname", :copy_action=>nil, :format_action=>nil, :timestamp_format=>nil}}
 
     expected_mapping = {
       'original_fieldname+new_fieldname' => {

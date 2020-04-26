@@ -80,7 +80,8 @@ class BeatsPipelineGeneratorTest < Minitest::Test
       [
         { 
           "timestamp" => { 
-            "field" => "field1", 
+            "field" => "field1",
+            "target_field" => "@timestamp",
             "layouts" => "UNIX_MS", 
             "timezone" => "UTC", 
             "ignore_missing" => true, 
@@ -89,7 +90,8 @@ class BeatsPipelineGeneratorTest < Minitest::Test
         }, 
         {
           "timestamp" => {
-            "field" => "field2", 
+            "field" => "field2",
+            "target_field" => "@timestamp",
             "layouts" => "UNIX", 
             "timezone" => "UTC", 
             "ignore_missing" => true, 

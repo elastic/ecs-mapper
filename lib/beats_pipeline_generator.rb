@@ -48,6 +48,7 @@ def generate_beats_pipeline(mapping)
         pipeline << {
           'timestamp' => {
             'field' => row[:source_field],
+            'target_field' => row[:destination_field],
             'layouts' => row[:timestamp_format],
             'timezone' => "UTC",
             'ignore_missing' => true,

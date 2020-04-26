@@ -41,11 +41,15 @@ def generate_logstash_pipeline(mapping)
         array_fields << lsf(affected_field)
       elsif ['parse_timestamp'].include?(row[:format_action])
         dates << {
-            'match' => [ lsf(row[:source_field]), row[:timestamp_format] ]
+          'date' => {
+            'match' => [ lsf(row[:source_field]), row[:timestamp_format] ],
+            'target' => lsf(row[:destination_field])
+          }
         }
       end
     end
   end
+
   return mutations, dates, array_fields
 end
 
@@ -63,8 +67,15 @@ end
 def render_date_line(line)
   raise "Expected one key at root of #{line}" if line.keys.size != 1
   action = line.keys.first
-  if line[action].is_a? Array
-    return "#{action} => #{line[action]}"
+  if line[action].is_a? Hash
+    match = line[action]["match"]
+    target = line[action]["target"]    
+    return """
+  date { 
+    match => #{match}
+    target => \"#{target}\" 
+  }
+"""
   end
 end
 
@@ -85,9 +96,7 @@ CONF
 
     if dates.length > 0
       f.write(<<-DATES)
-  date {
-    #{dates.map{|line| render_date_line(line)}.join("\n    ")}
-  } 
+#{dates.map{|line| render_date_line(line)}.join("\n    ")}
 DATES
     end
 

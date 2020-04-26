@@ -58,13 +58,13 @@ as you need in your spreadsheets/CSV. Only the following columns will be conside
 | source\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Lines with empty "source\_field" are skipped. |
 | destination\_field | required |  | A dotted Elasticsearch field name. Dots represent JSON nesting. Can be left empty if there's no copy action (just a type conversion). |
 | format\_action | optional | to\_float, to\_integer, to\_string, to\_boolean, to\_array, parse\_timestamp, uppercase, lowercase, (empty) | Simple conversion to apply to the field value. |
-| timestamp\_format | optional | UNIX, UNIX\_MS, ISO8601, TAI64N, or a Java time pattern. |
+| timestamp\_format | optional | Only UNIX and UNIX\_MS formats are supported across all three tools. You may also specify other formats, like ISO8601, TAI64N, or a Java time pattern, but we will not validate whether the format is supported by the tool. |
 | copy\_action | optional | rename, copy, (empty) | What to do with the field. If left empty, default action is based on the `--copy-action` flag. |
 
 You can start from this
 [spreadsheet template](https://docs.google.com/spreadsheets/d/1m5JiOTeZtUueW3VOVqS8bFYqNGEEyp0jAsgO12NFkNM). Make a copy of it in your Google Docs account, or download it as an Excel file.
 
-When the destination field is @timestamp, then we always enforce an explicit date ```format\_action``` of ```parse\_timestamp``` to ```UNIX_MS``` avoid conversion problems downstream. If no ```timestamp\_format``` is provided, then ```UNIX_MS``` is used. Please note that the timestamp layouts used by the [Filebeat processor for converting timestamps](https://www.elastic.co/guide/en/beats/filebeat/current/processor-timestamp.html) are different than the formats supported by date processors in Logstash and Elasticsearch Ingest Node.
+When the destination field is @timestamp, then we always enforce an explicit date ```format_action``` of ```parse_timestamp``` to ```UNIX_MS``` avoid conversion problems downstream. If no ```timestamp_format``` is provided, then ```UNIX_MS``` is used. Please note that the timestamp layouts used by the [Filebeat processor for converting timestamps](https://www.elastic.co/guide/en/beats/filebeat/current/processor-timestamp.html) are different than the formats supported by date processors in Logstash and Elasticsearch Ingest Node.
 
 
 

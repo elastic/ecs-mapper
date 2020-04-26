@@ -96,11 +96,20 @@ class LogstashPipelineGeneratorTest < Minitest::Test
     )
 
     assert_equal(
-      [ 
-        {"match" => ["[field1]", "UNIX_MS"] }, 
-        {"match" => ["[field2]", "UNIX"] }
-      ],
-      dates
+      {"date" => {
+        "match" => ["[field1]", "UNIX_MS"],
+        "target" => "[@timestamp]"
+      }},
+      dates[0]
     )
+
+    assert_equal(
+      {"date" => {
+        "match" => ["[field2]", "UNIX"],
+        "target" => "[@timestamp]"
+      }},
+      dates[1]
+    )
+
   end
 end
