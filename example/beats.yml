@@ -1,4 +1,25 @@
 processors:
+- timestamp:
+    field: some_timestamp_field
+    target_field: "@timestamp"
+    layouts: UNIX_MS
+    timezone: UTC
+    ignore_missing: true
+    ignore_failure: true
+- timestamp:
+    field: some_other_timestamp
+    target_field: "@timestamp"
+    layouts: UNIX_MS
+    timezone: UTC
+    ignore_missing: true
+    ignore_failure: true
+- timestamp:
+    field: some_new_timestamp
+    target_field: destination_timestamp
+    layouts: UNIX
+    timezone: UTC
+    ignore_missing: true
+    ignore_failure: true
 - copy_fields:
     fields:
     - from: srcip

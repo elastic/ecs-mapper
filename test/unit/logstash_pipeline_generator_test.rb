@@ -8,7 +8,7 @@ class LogstashPipelineGeneratorTest < Minitest::Test
       'old2' => { source_field: 'old2', destination_field: 'new2', copy_action: 'rename' },
       'old3' => { source_field: 'old3', destination_field: 'new3', copy_action: 'copy' },
     }
-    mutations, array_fields = generate_logstash_pipeline(mapping)
+    mutations, _, _ = generate_logstash_pipeline(mapping)
     old1_processor = mutations[0]
     old2_processor = mutations[1]
     old3_processor = mutations[2]
@@ -22,7 +22,7 @@ class LogstashPipelineGeneratorTest < Minitest::Test
       'field1' => { source_field: 'field1', destination_field: 'field1', copy_action: 'copy' },
       'field2' => { source_field: 'field2', destination_field: nil, copy_action: 'copy' },
     }
-    mutations, array_fields = generate_logstash_pipeline(mapping)
+    mutations, _, _ = generate_logstash_pipeline(mapping)
     assert_equal([], mutations, "No rename processor should be added when there's no rename to perform")
   end
 
@@ -58,11 +58,58 @@ class LogstashPipelineGeneratorTest < Minitest::Test
       'field4+field6' => { source_field: 'field4', destination_field: 'field6', copy_action: 'copy' },
     }
 
-    pl = generate_logstash_pipeline(mapping)
+    mutations, _, _ = generate_logstash_pipeline(mapping)
 
     assert_equal(
-      [{"copy"=>{"[field1]"=>"[field3]"}}, {"copy"=>{"[field2]"=>"[field3]"}}, {"copy"=>{"[field4]"=>"[field5]"}}, {"copy"=>{"[field4]"=>"[field6]"}}],
-      pl.first
+      [ {"copy" => {"[field1]" => "[field3]"}}, 
+        {"copy" => {"[field2]" => "[field3]"}}, 
+        {"copy" => {"[field4]" => "[field5]"}}, 
+        {"copy" => {"[field4]" => "[field6]"}}],
+      mutations
     )
+  end
+
+  def test_dates
+    mapping = {
+      'field1+@timestamp' =>
+        { source_field: 'field1',
+          destination_field: '@timestamp',
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX_MS' },
+      'field2+@timestamp' =>
+        { source_field: 'field2',
+          destination_field: '@timestamp',
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX' },
+    }
+
+    mutations, dates, array_fields = generate_logstash_pipeline(mapping)
+
+    assert_equal(
+      [],
+      mutations
+    )
+
+    assert_equal(
+      [],
+      array_fields
+    )
+
+    assert_equal(
+      {"date" => {
+        "match" => ["[field1]", "UNIX_MS"],
+        "target" => "[@timestamp]"
+      }},
+      dates[0]
+    )
+
+    assert_equal(
+      {"date" => {
+        "match" => ["[field2]", "UNIX"],
+        "target" => "[@timestamp]"
+      }},
+      dates[1]
+    )
+
   end
 end

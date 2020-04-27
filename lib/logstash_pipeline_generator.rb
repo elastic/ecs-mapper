@@ -2,6 +2,7 @@ require_relative 'helpers'
 
 def generate_logstash_pipeline(mapping)
   mutations = [] # Most things are in the same mutate block
+  dates = []
   array_fields = []
   mapping.each_pair do |_, row|
     if same_field_name?(row)
@@ -10,7 +11,7 @@ def generate_logstash_pipeline(mapping)
 
     source_field = row[:source_field]
 
-    if row[:destination_field]
+    if row[:destination_field] and not ['parse_timestamp'].include?(row[:format_action])
       if 'copy' == row[:copy_action]
         mutations << { 'copy' => { lsf(source_field) => lsf(row[:destination_field]) } }
       else
@@ -38,10 +39,18 @@ def generate_logstash_pipeline(mapping)
         mutations << { 'lowercase' => [lsf(affected_field)] }
       elsif 'to_array' == row[:format_action]
         array_fields << lsf(affected_field)
+      elsif ['parse_timestamp'].include?(row[:format_action])
+        dates << {
+          'date' => {
+            'match' => [ lsf(row[:source_field]), row[:timestamp_format] ],
+            'target' => lsf(row[:destination_field])
+          }
+        }
       end
     end
   end
-  return mutations, array_fields
+
+  return mutations, dates, array_fields
 end
 
 def render_mutate_line(line)
@@ -55,11 +64,26 @@ def render_mutate_line(line)
   end
 end
 
+def render_date_line(line)
+  raise "Expected one key at root of #{line}" if line.keys.size != 1
+  action = line.keys.first
+  if line[action].is_a? Hash
+    match = line[action]["match"]
+    target = line[action]["target"]    
+    return """
+  date { 
+    match => #{match}
+    target => \"#{target}\" 
+  }
+"""
+  end
+end
+
 def lsf(field)
   field.split('.').map{|f| "[#{f}]"}.join
 end
 
-def output_logstash_pipeline(mutations, array_fields, output_dir)
+def output_logstash_pipeline(mutations, dates, array_fields, output_dir)
   file_name = output_dir.join('logstash.conf')
   File.open(file_name, 'w') do |f|
 
@@ -69,6 +93,12 @@ filter {
     #{mutations.map{|line| render_mutate_line(line)}.join("\n    ")}
   }
 CONF
+
+    if dates.length > 0
+      f.write(<<-DATES)
+#{dates.map{|line| render_date_line(line)}.join("\n    ")}
+DATES
+    end
 
     array_fields.each do |array_field|
       f.write(<<-RB)

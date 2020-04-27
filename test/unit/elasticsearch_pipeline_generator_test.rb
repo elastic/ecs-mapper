@@ -73,4 +73,41 @@ class OptionsParserTest < Minitest::Test
       pl[3]
     )         
   end
+
+  def test_dates
+    mapping = {
+      'field1+@timestamp' => 
+        { source_field: 'field1', 
+          destination_field: '@timestamp',
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX_MS' },
+      'field2+@timestamp' =>
+        { source_field: 'field2',
+          destination_field: '@timestamp',
+          format_action: 'parse_timestamp',
+          timestamp_format: 'UNIX' },
+    }
+
+    pl = generate_elasticsearch_pipeline(mapping)
+
+    assert_equal(
+      { "date" => {
+        :field => "field1", 
+        :target_field => "@timestamp", 
+        :formats => ["UNIX_MS"], 
+        :timezone => "UTC", 
+        :ignore_failure => true}},
+      pl[0]
+    )
+
+    assert_equal(
+      { "date" => {
+        :field => "field2", 
+        :target_field => "@timestamp", 
+        :formats => ["UNIX"], 
+        :timezone => "UTC", 
+        :ignore_failure => true}},
+      pl[1]
+    )
+  end
 end

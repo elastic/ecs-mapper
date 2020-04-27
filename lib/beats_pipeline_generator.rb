@@ -6,6 +6,8 @@ def generate_beats_pipeline(mapping)
   fields_to_copy = []
   fields_to_rename = []
   fields_to_convert = []
+  pipeline = []
+
   mapping.each_pair do |_, row|
     if same_field_name?(row)
       next if row[:format_action].nil?
@@ -13,7 +15,7 @@ def generate_beats_pipeline(mapping)
 
     source_field = row[:source_field]
 
-    if row[:destination_field]
+    if row[:destination_field] and not ['parse_timestamp'].include?(row[:format_action])
       statement = {
         'from' => source_field,
         'to' => row[:destination_field],
@@ -42,20 +44,21 @@ def generate_beats_pipeline(mapping)
         statement = { 'from' => affected_field, 'type' => type }
         fields_to_convert << statement
 
-      # elsif ['uppercase', 'lowercase', 'to_array'].include?(row[:format_action])
-      #   processor = {
-      #     'script' => {
-      #       'lang' => 'javascript',
-      #       'source' => ... # herein lies all the fun :-)
-      #       ignore_failure: true,
-      #     }
-      #   }
-
+      elsif ['parse_timestamp'].include?(row[:format_action])
+        pipeline << {
+          'timestamp' => {
+            'field' => row[:source_field],
+            'target_field' => row[:destination_field],
+            'layouts' => row[:timestamp_format],
+            'timezone' => "UTC",
+            'ignore_missing' => true,
+            'ignore_failure' => true
+          }
+        }
       end
     end
   end
 
-  pipeline = []
   if fields_to_copy.size > 0
     pipeline << {
       'copy_fields' => { 'fields' => fields_to_copy,
